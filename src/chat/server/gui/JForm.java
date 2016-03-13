@@ -18,24 +18,20 @@ public class JForm extends JFrame {
     public JForm() {
         this.lblIp = new JLabel("IP Address: " + ChatServer.getIpAddress());
         this.lblIp.setHorizontalAlignment(SwingConstants.CENTER);
-
         this.lblPort = new JLabel("Select the Port");
         this.lblPort.setHorizontalAlignment(SwingConstants.CENTER);
-
         DefaultComboBoxModel modelCmbPort = new DefaultComboBoxModel();
         for (int iterator = 0; iterator < 65536; iterator++) {
             modelCmbPort.addElement(iterator);
         }
         this.cmbPort = new JComboBox(modelCmbPort);
         this.cmbPort.setSelectedItem(9999);
-
         this.btnListen = new JButton("Listen");
     }
 
     public void initialize() {
         this.setLayout(new GridBagLayout());
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
-
         gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
         gridBagConstraints.gridheight = 1;
         gridBagConstraints.gridwidth = 1;
@@ -45,7 +41,6 @@ public class JForm extends JFrame {
         gridBagConstraints.weightx = 1;
         gridBagConstraints.weighty = 0;
         this.add(this.lblIp, gridBagConstraints);
-
         gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
         gridBagConstraints.gridheight = 1;
         gridBagConstraints.gridwidth = 1;
@@ -55,7 +50,6 @@ public class JForm extends JFrame {
         gridBagConstraints.weightx = 1;
         gridBagConstraints.weighty = 0;
         this.add(this.lblPort, gridBagConstraints);
-
         gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
         gridBagConstraints.gridheight = 1;
         gridBagConstraints.gridwidth = 1;
@@ -65,7 +59,6 @@ public class JForm extends JFrame {
         gridBagConstraints.weightx = 1;
         gridBagConstraints.weighty = 0;
         this.add(this.cmbPort, gridBagConstraints);
-
         gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
         gridBagConstraints.gridheight = 1;
         gridBagConstraints.gridwidth = 1;
@@ -75,13 +68,11 @@ public class JForm extends JFrame {
         gridBagConstraints.weightx = 1;
         gridBagConstraints.weighty = 0;
         this.add(this.btnListen, gridBagConstraints);
-
         this.setSize(new Dimension(350, 300));
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setTitle("Server");
         this.setVisible(true);
-
         this.btnListen.addActionListener(new JFormListener(this));
     }
 

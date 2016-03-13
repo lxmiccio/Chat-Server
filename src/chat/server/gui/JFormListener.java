@@ -20,9 +20,7 @@ public class JFormListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        if (actionEvent.getSource() == this.jForm.getBtnListen()) {
-            this.jForm.dispose();
-            new Thread(new Server((int) this.jForm.getCmbPort().getSelectedItem())).start();
-        }
+        this.jForm.dispose();
+        new Thread(new Server((int) this.jForm.getCmbPort().getSelectedItem())).start();
     }
 }

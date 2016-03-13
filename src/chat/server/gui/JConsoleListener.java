@@ -20,7 +20,8 @@ public class JConsoleListener implements WindowListener {
 
     @Override
     public void windowClosing(WindowEvent windowEvent) {
-        this.jConsole.getServer().writeOnClients(new Message("Server", "Exit"));
+        this.jConsole.addMessage(new Message("Server", "Exit"));
+        this.jConsole.getServer().writeToClients(new Message("Server", "Exit"));
     }
 
     @Override

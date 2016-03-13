@@ -9,11 +9,11 @@ import java.net.*;
  */
 public class Client implements Runnable {
 
+    private ObjectInputStream objectInputStream;
+    private ObjectOutputStream objectOutputStream;
     private Server server;
     private Socket socket;
     private String username;
-    private ObjectInputStream objectInputStream;
-    private ObjectOutputStream objectOutputStream;
 
     public Client(Server server, Socket socket) {
         if (server == null) {
@@ -25,36 +25,45 @@ public class Client implements Runnable {
             throw new IllegalArgumentException("Socket cannot be null");
         }
         this.socket = socket;
+        try {
+            this.objectInputStream = new ObjectInputStream(this.socket.getInputStream());
+            this.objectOutputStream = new ObjectOutputStream(this.socket.getOutputStream());
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
 
-        this.username = null;
+        new Thread(this).start();
     }
 
     @Override
     public void run() {
+        this.readUsername();
+        this.readMessages();
+    }
+
+    private void readUsername() {
         try {
-            this.objectOutputStream = new ObjectOutputStream(this.socket.getOutputStream());
-            this.objectOutputStream.flush();
-            this.objectInputStream = new ObjectInputStream(this.socket.getInputStream());
-            System.out.print("sdasf");
+            this.username = this.objectInputStream.readUTF();
+            this.server.getjConsole().addMessage(new Message(this.username, this.username + " has connected"));
+            this.server.writeToClients(new Message(this.username, this.username + " has connected"));
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+    }
+
+    private void readMessages() {
+        boolean listen = true;
         try {
-            this.username = this.objectInputStream.readUTF();
-            this.server.getjConsole().addLog(username + " has connected");
-            boolean listen = true;
             while (listen) {
-                System.out.println("prima");
                 String fromClient = this.objectInputStream.readUTF();
-                System.out.println(fromClient);
-                if (fromClient.equalsIgnoreCase("Exit")) {
-                    System.out.println("abcdef");
-                    listen = false;
-                    this.server.getjConsole().addLog(username + " has disconnected");
-                    this.server.removeClient(this);
-                    break;
+                if (!fromClient.equalsIgnoreCase("Exit")) {
+                    this.server.getjConsole().addMessage(new Message(this.username, fromClient));
+                    this.server.writeToClients(new Message(this.username, fromClient));
                 } else {
-                    this.server.writeOnClients(new Message(this.username, fromClient));
+                    listen = false;
+                    this.server.getjConsole().addMessage(new Message(this.username, this.username + " has disconnected"));
+                    this.server.writeToClients(new Message(this.username, this.username + " has disconnected"));
+                    this.server.removeClient(this);
                 }
             }
         } catch (IOException exception) {
@@ -62,11 +71,19 @@ public class Client implements Runnable {
         }
     }
 
-    public ObjectOutputStream getOutToClient() {
-        return this.objectOutputStream;
+    public ObjectInputStream getObjectInputStream() {
+        return objectInputStream;
+    }
+
+    public ObjectOutputStream getObjectOutputStream() {
+        return objectOutputStream;
+    }
+
+    public Socket getSocket() {
+        return socket;
     }
 
     public String getUsername() {
-        return this.username;
+        return username;
     }
 }

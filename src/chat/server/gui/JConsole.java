@@ -3,8 +3,6 @@ package chat.server.gui;
 import chat.engine.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.text.*;
-import java.util.*;
 import javax.swing.*;
 
 /**
@@ -23,13 +21,10 @@ public class JConsole extends JFrame {
             throw new IllegalArgumentException("Server cannot be null");
         }
         this.server = server;
-
         this.pnlServices = new JPanel();
         this.pnlServices.setLayout(new GridBagLayout());
-
         this.scrPnServices = new JScrollPane();
         this.scrPnServices.setViewportView(this.pnlServices);
-
         this.gridBagConstraints = new GridBagConstraints();
         this.gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
         this.gridBagConstraints.gridheight = 1;
@@ -48,7 +43,6 @@ public class JConsole extends JFrame {
     public void initialize() {
         this.setLayout(new GridBagLayout());
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
-
         gridBagConstraints.fill = GridBagConstraints.BOTH;
         gridBagConstraints.gridheight = 1;
         gridBagConstraints.gridwidth = 1;
@@ -58,15 +52,14 @@ public class JConsole extends JFrame {
         gridBagConstraints.weightx = 1;
         gridBagConstraints.weighty = 1;
         this.add(this.scrPnServices, gridBagConstraints);
-
-        this.setSize(new Dimension(500, 300));
+        this.setSize(new Dimension(750, 300));
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setTitle("Server");
         this.setVisible(true);
     }
 
-    public void addLog(String message) {
+    public void addMessage(Message message) {
         AdjustmentListener adjustmentListener = new AdjustmentListener() {
             @Override
             public void adjustmentValueChanged(AdjustmentEvent adjustmentEvent) {
@@ -75,18 +68,8 @@ public class JConsole extends JFrame {
             }
         };
         this.scrPnServices.getVerticalScrollBar().addAdjustmentListener(adjustmentListener);
-
-        JLabel lblLog = new JLabel(this.getTime() + ": " + message);
-        lblLog.setHorizontalAlignment(SwingConstants.CENTER);
-
         this.gridBagConstraints.gridy++;
-        this.pnlServices.add(lblLog, this.gridBagConstraints);
-
+        this.pnlServices.add(message.getJPanel(), this.gridBagConstraints);
         this.pnlServices.revalidate();
-    }
-
-    private String getTime() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return dateFormat.format(new Date());
     }
 }

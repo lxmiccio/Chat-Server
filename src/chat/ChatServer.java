@@ -30,8 +30,7 @@ public class ChatServer {
     public static String getIpAddress() {
         String ip = "";
         try {
-            InetAddress inetAddress = InetAddress.getLocalHost();
-            InetAddress[] inetAddresses = InetAddress.getAllByName(inetAddress.getCanonicalHostName());
+            InetAddress[] inetAddresses = InetAddress.getAllByName(InetAddress.getLocalHost().getCanonicalHostName());
             if (inetAddresses != null) {
                 ip = inetAddresses[0].toString().substring(inetAddresses[0].toString().lastIndexOf("/") + 1);
             }

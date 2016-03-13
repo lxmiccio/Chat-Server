@@ -25,11 +25,21 @@ public class Server implements Runnable {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
-
         this.clients = new ArrayList<>();
-
         this.jConsole = new JConsole(this);
         this.jConsole.initialize();
+    }
+
+    @Override
+    public void run() {
+        this.jConsole.addMessage(new Message("Server", "Waiting for Client on " + ChatServer.getIpAddress() + " : " + this.serverSocket.getLocalPort()));
+        while (true) {
+            try {
+                this.clients.add(new Client(this, this.serverSocket.accept()));
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        }
     }
 
     public JConsole getjConsole() {
@@ -43,31 +53,17 @@ public class Server implements Runnable {
         this.clients.remove(client);
     }
 
-    public void writeOnClients(Message message) {
-        System.out.print("a");
+    public void writeToClients(Message message) {
+        if (message == null) {
+            throw new IllegalArgumentException("Message cannot be null");
+        }
         try {
             for (Client client : this.clients) {
-                client.getOutToClient().writeObject(message);
-                client.getOutToClient().flush();
+                client.getObjectOutputStream().writeObject(message);
+                client.getObjectOutputStream().flush();
             }
         } catch (IOException exception) {
             exception.printStackTrace();
-        }
-    }
-
-    @Override
-    public void run() {
-        this.jConsole.addLog("Waiting for client on " + ChatServer.getIpAddress() + ":" + this.serverSocket.getLocalPort() + "...");
-        while (true) {
-            try {
-                System.out.println("aaa");
-                Socket socket = this.serverSocket.accept();
-                Client client = new Client(this, socket);
-                this.clients.add(client);
-                new Thread(client).start();
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
         }
     }
 }
